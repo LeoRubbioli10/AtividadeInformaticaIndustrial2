@@ -4,7 +4,7 @@ import numpy as np
 
 class Imagem:
 
-    #Classe construtora
+    #Método construtor da classe
     def __init__(self, caminho_imagem = None):
         self.img = None #Atributo que se guarda pixels da imagem
 
@@ -12,11 +12,11 @@ class Imagem:
         if caminho_imagem:
             self.lerArquivo(caminho_imagem)
 
-    #Classe para ler o arquivo de imagem
+    #Método para ler arquivo de imagem
     def lerArquivo(self, caminho_imagem):
-        # leitura da imagem
-        caminho_imagem = 'faces/image_0001.jpg'
-        img = cv2.imread(caminho_imagem)
+        self.img = cv2.imread(caminho_imagem)
+        if self.img is None:
+            print(f"Erro ao carregar a imagem: {caminho_imagem}")
 
     #Classe para codificar a imagem em bytes
     def codificarImagem(self, img):
