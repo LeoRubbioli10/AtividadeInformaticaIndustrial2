@@ -1,5 +1,7 @@
 import socket
 
+from utils.protocolo import enviar_imagem as enviar
+
 class Cliente:
     """
     Classe Cliente - API Socket
@@ -22,10 +24,20 @@ class Cliente:
             self.__tcp.connect(endpoint)
             print("Conexão realizada com sucesso!")
 
-            # A comunicação de imagens será implementada depois.
+            self.__envia_imagem("tests/image_001.jpg")
 
         except OSError as e:
             print("Erro ao conectar com o servidor:", e)
 
         finally:
             self.__tcp.close()
+
+    def __envia_imagem(self, image_path):
+        """
+        Envia uma imagem JPEG para o servidor.
+        """
+        with open(image_path, 'rb') as f:
+            dados = f.read()
+
+        enviar(self.__tcp, dados)
+        print("Imagem enviada com sucesso!")
