@@ -43,10 +43,10 @@ class ServidorMT():
         endpoint = (self._host, self._port)
         try:
             self.__tcp.bind(endpoint)
-            self.__tcp.listen(5) # Permite enfileirar algumas conexões
+            self.__tcp.listen(1) # Permite enfileirar algumas conexões
             print(f"Servidor iniciado em {self._host}:{self._port}")
             
-            # Laço de accept que inicia a thread e volta a esperar, sem join()[cite: 2]
+            # Laço de accept que inicia a thread e volta a esperar, sem join()
             while True:
                 con, client = self.__tcp.accept()
                 
