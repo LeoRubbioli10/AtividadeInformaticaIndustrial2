@@ -2,13 +2,15 @@ import cv2
 import os
 import numpy as np
 
-Class Imagem:
+class Imagem:
 
     #Classe construtora
-    def __init__(self, caminho_imagem):
+    def __init__(self, caminho_imagem = None):
+        self.img = None #Atributo que se guarda pixels da imagem
 
-    #Classe para guardar Pixel
-    def guardarPixel(self, x, y, valor):
+        #Se um caminho for passado na criação do objeto, a imagem será lida
+        if caminho_imagem:
+            self.lerArquivo(caminho_imagem)
 
     #Classe para ler o arquivo de imagem
     def lerArquivo(self, caminho_imagem):
