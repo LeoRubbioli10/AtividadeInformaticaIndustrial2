@@ -19,7 +19,7 @@ class Imagem:
             print(f"Erro ao carregar a imagem: {caminho_imagem}")
 
     #Método para codificação de imagem
-    def codificarImagem(self, img):
+    def codificarImagem(self):
 
         if self.img is None:
             print("Nenhuma imagem carregada para codificação.")
