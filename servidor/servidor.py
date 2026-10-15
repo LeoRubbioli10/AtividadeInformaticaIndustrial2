@@ -32,7 +32,10 @@ class ServidorMT():
     """
     #Classe construtora
     def __init__(self, host, port):
-
+        self._host = host
+        self._port = port
+        self.__tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        
     def start(self):
         """
         Método que inicializa a execução do servidor
