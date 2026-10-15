@@ -1,7 +1,7 @@
 import socket
+import cv2
 
-from utils.protocolo import enviar_imagem as enviar
-from utils.protocolo import receber_imagem as receber
+from utils.protocolo import enviar_imagem, receber_imagem
 from utils.image import Imagem
 
 class Cliente:
@@ -39,7 +39,7 @@ class Cliente:
             # Exibe a imagem decodificada
             self.__exibir_imagem(img)
 
-        except (OSError, ValueError) as e:
+        except (OSError, ValueError, cv2.error) as e:
             print("Erro durante a comunicação:", e)
 
         finally:
@@ -49,16 +49,17 @@ class Cliente:
         """
         Envia uma imagem JPEG para o servidor.
         """
-        dados, _ = Imagem(image_path).codificarImagem()
+        img = Imagem(image_path)
+        dados, _ = img.codificarImagem()
 
-        enviar(self.__tcp, dados)
+        enviar_imagem(self.__tcp, dados)
         print("Imagem enviada com sucesso!")
 
     def __recebe_imagem(self):
         """
         Recebe os bytes da imagem processada.
         """
-        dados = receber(self.__tcp)
+        dados = receber_imagem(self.__tcp)
         return dados
 
     def __decodifica_imagem(self, dados):
@@ -68,10 +69,15 @@ class Cliente:
         img = Imagem()
         img.decodificaBytes(dados)
 
+        if img.img is None:
+            raise ValueError("Erro ao decodificar a imagem recebida.")
+
         return img
 
     def __exibir_imagem(self, img):
         """
         Exibe a imagem processada.
         """
-        img.mostrar_imagem()
+        cv2.imshow("Imagem Processada", img.img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
