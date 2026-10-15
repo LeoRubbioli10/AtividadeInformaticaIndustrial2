@@ -18,12 +18,21 @@ class Imagem:
         if self.img is None:
             print(f"Erro ao carregar a imagem: {caminho_imagem}")
 
-    #Classe para codificar a imagem em bytes
+    #Método para codificação de imagem
     def codificarImagem(self, img):
-         # codificação para bytes
-        _, img_bytes = cv2.imencode('.jpg', img) 
+
+        if self.img is None:
+            print("Nenhuma imagem carregada para codificação.")
+            raise ValueError("Nenhuma imagem carregada para codificação. Leia um arquivo primeiro.")
+        
+        _, img_bytes = cv2.imencode('.jpg', self.img) 
         img_bytes = bytes(img_bytes)
+        
+        # O tamanho (4 bytes) geralmente é usado para rede. 
+        # Como a classe não faz comunicação, retornamos os bytes e o tamanho separadamente.
         tamanho_da_imagem_codificado = len(img_bytes).to_bytes(4, 'big')
+        
+        return img_bytes, tamanho_da_imagem_codificado
         
     #Classe para decodificar a imagem a partir de bytes
     def decodificaBytes(self, img_bytes):
