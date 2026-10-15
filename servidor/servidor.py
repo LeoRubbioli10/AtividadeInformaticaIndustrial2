@@ -2,8 +2,12 @@ import socket
 import threading
 import cv2
 import os
-from imagem import Imagem
-import protocolo
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from utils.imagem import Imagem
+from utils import protocolo
 
 def processar_imagem(img_obj):
     """
@@ -16,13 +20,13 @@ def processar_imagem(img_obj):
     
     face_cascade = cv2.CascadeClassifier(xml_classificador)
     
-    # Processa a imagem usando o atributo 'matriz' do objeto
-    gray = cv2.cvtColor(img_obj.matriz, cv2.COLOR_BGR2GRAY)
+    # Processa a imagem usando o atributo 'img' do objeto
+    gray = cv2.cvtColor(img_obj.img, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
     # Desenha retângulos nas áreas onde as faces foram detectadas
     for (x, y, w, h) in faces:
-        cv2.rectangle(img_obj.matriz, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        cv2.rectangle(img_obj.img, (x, y), (x+w, y+h), (0, 255, 0), 2)
         
     return img_obj
 
@@ -72,23 +76,23 @@ class ServidorMT():
             # import time; time.sleep(5)
             
             # 1. Recebe os bytes da imagem enviada pelo cliente usando o protocolo
-            dados_recebidos = protocolo.receber_mensagem(con)
+            dados_recebidos = protocolo.receber_imagem(con)
             if not dados_recebidos:
                 print(f"[{client}] Nenhum dado recebido.")
                 return
 
             # 2. Instancia a imagem e decodifica[cite: 2]
             img = Imagem()
-            img.decodificar(dados_recebidos)
+            img.decodificaBytes(dados_recebidos)
 
             # 3. Executa o processamento[cite: 2]
             img_processada = processar_imagem(img)
 
             # 4. Codifica a imagem processada para bytes JPEG[cite: 2]
-            dados_resposta = img_processada.codificar()
+            dados_resposta = img_processada.codificarImagem()
 
             # 5. Envia a resposta de volta ao cliente usando o protocolo
-            protocolo.enviar_mensagem(con, dados_resposta)
+            protocolo.enviar_imagem(con, dados_resposta)
             
             print(f"[{client}] Terminou. Imagem processada e enviada.")
             
@@ -98,3 +102,7 @@ class ServidorMT():
         finally:
             # Fecha os sockets ao terminar[cite: 2]
             con.close()
+
+if __name__ == "__main__":
+    servidor = ServidorMT("127.0.0.1", 9000)
+    servidor.start()

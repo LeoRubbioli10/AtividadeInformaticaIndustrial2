@@ -1,8 +1,12 @@
 import socket
 import cv2
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from utils.protocolo import enviar_imagem, receber_imagem
-from utils.image import Imagem
+from utils.imagem import Imagem # Corrigido de 'image' para 'imagem'
 
 class Cliente:
     """
@@ -28,7 +32,7 @@ class Cliente:
             print("Conexão realizada com sucesso!")
 
             # Envia a imagem para o servidor
-            self.__envia_imagem("tests/image_001.jpg")
+            self.__envia_imagem("tests/image_0001.jpg")
 
             # Recebe a imagem processada do servidor
             dados = self.__recebe_imagem()
