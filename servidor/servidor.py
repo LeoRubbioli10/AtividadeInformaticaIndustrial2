@@ -65,3 +65,36 @@ class ServidorMT():
         :param con: objeto socket utilizado para enviar e receber dados
         :param client: é o endereço do cliente
         """
+        print(f"[{client}] Iniciou o atendimento.")
+        
+        try:
+            # IMPORTANTE: Para o teste 3, você deve colocar o time.sleep(5) AQUI.
+            # import time; time.sleep(5)
+            
+            # 1. Recebe os bytes da imagem enviada pelo cliente usando o protocolo
+            dados_recebidos = protocolo.receber_mensagem(con)
+            if not dados_recebidos:
+                print(f"[{client}] Nenhum dado recebido.")
+                return
+
+            # 2. Instancia a imagem e decodifica[cite: 2]
+            img = Imagem()
+            img.decodificar(dados_recebidos)
+
+            # 3. Executa o processamento[cite: 2]
+            img_processada = processar_imagem(img)
+
+            # 4. Codifica a imagem processada para bytes JPEG[cite: 2]
+            dados_resposta = img_processada.codificar()
+
+            # 5. Envia a resposta de volta ao cliente usando o protocolo
+            protocolo.enviar_mensagem(con, dados_resposta)
+            
+            print(f"[{client}] Terminou. Imagem processada e enviada.")
+            
+        except Exception as e:
+            # Uma falha em um atendimento não deve encerrar o servidor[cite: 2]
+            print(f"[{client}] Erro durante o atendimento: {e}")
+        finally:
+            # Fecha os sockets ao terminar[cite: 2]
+            con.close()
