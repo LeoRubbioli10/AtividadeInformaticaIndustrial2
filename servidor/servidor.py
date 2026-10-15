@@ -88,10 +88,10 @@ class ServidorMT():
             # 3. Executa o processamento[cite: 2]
             img_processada = processar_imagem(img)
 
-            # 4. Codifica a imagem processada para bytes JPEG[cite: 2]
-            dados_resposta = img_processada.codificarImagem()
+            # 4. Codifica a imagem processada (separando os bytes do tamanho)
+            dados_resposta, tamanho = img_processada.codificarImagem()
 
-            # 5. Envia a resposta de volta ao cliente usando o protocolo
+            # 5. Envia a resposta contendo APENAS os bytes
             protocolo.enviar_imagem(con, dados_resposta)
             
             print(f"[{client}] Terminou. Imagem processada e enviada.")
