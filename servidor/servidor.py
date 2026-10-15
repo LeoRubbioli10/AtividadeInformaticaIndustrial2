@@ -35,11 +35,29 @@ class ServidorMT():
         self._host = host
         self._port = port
         self.__tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
+
     def start(self):
         """
         Método que inicializa a execução do servidor
         """
+        endpoint = (self._host, self._port)
+        try:
+            self.__tcp.bind(endpoint)
+            self.__tcp.listen(5) # Permite enfileirar algumas conexões
+            print(f"Servidor iniciado em {self._host}:{self._port}")
+            
+            # Laço de accept que inicia a thread e volta a esperar, sem join()[cite: 2]
+            while True:
+                con, client = self.__tcp.accept()
+                
+                # Inicia uma nova thread para atender o cliente[cite: 1]
+                t = threading.Thread(target=self._service, args=(con, client))
+                t.start()
+
+        except Exception as e:
+            print("Erro ao inicializar o servidor:", e.args)
+        finally:
+            self.__tcp.close()
 
     def _service(self, con, client):
         """
